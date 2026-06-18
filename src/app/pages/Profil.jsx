@@ -18,12 +18,10 @@ const Profil = () => {
           </h1>
 
           <p className="text-gray-500">
-            lamine@gmail.com
+            laminendiaye0444@gmail
           </p>
 
-          <button className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-xl font-semibold hover:bg-blue-700">
-            Modifier le profil
-          </button>
+          
         </div>
 
         {/* Statistiques */}

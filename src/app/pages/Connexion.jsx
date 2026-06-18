@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-const URL_FRONT=import.meta.env.VITE_URL_FRONT;
+
+const URL_BACK = import.meta.env.VITE_URL_BACK;
 
 const Connexion = () => {
   const [email, setEmail] = useState("");
@@ -16,33 +17,32 @@ const Connexion = () => {
     }
 
     try {
-      const response = await fetch(`${URL_FRONT}api/auth/inscription`,
-        "http://localhost:3000/api/auth/connexion",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      const response = await fetch(`${URL_BACK}/api/auth/connexion`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-      const result = await response.json();
+      const texte = await response.text();
+
+      if (!texte) {
+        throw new Error("Réponse vide du serveur");
+      }
+
+      const result = JSON.parse(texte);
 
       if (response.ok) {
         localStorage.setItem("token", result.token);
-
-        alert(
-          `Connexion réussie ${result.user.prenom} ${result.user.nom}`
-        );
-
+        alert(`Connexion réussie ${result.user.prenom} ${result.user.nom}`);
         navigate("/");
       } else {
-        alert(result.message);
+        alert(result.message || "Erreur de connexion");
       }
     } catch (error) {
       console.error(error);
-      alert("Erreur serveur");
+      alert("Erreur serveur : " + error.message);
     }
   };
 
@@ -59,10 +59,7 @@ const Connexion = () => {
 
         <form onSubmit={Laconnexion} className="space-y-5">
           <div>
-            <label className="block mb-2 font-medium">
-              Adresse email
-            </label>
-
+            <label className="block mb-2 font-medium">Adresse email</label>
             <input
               type="email"
               placeholder="exemple@gmail.com"
@@ -73,10 +70,7 @@ const Connexion = () => {
           </div>
 
           <div>
-            <label className="block mb-2 font-medium">
-              Mot de passe
-            </label>
-
+            <label className="block mb-2 font-medium">Mot de passe</label>
             <input
               type="password"
               placeholder="********"
@@ -94,10 +88,7 @@ const Connexion = () => {
           </button>
 
           <div className="text-center mt-4">
-            <span className="text-gray-600">
-              Vous n'avez pas de compte ?
-            </span>
-
+            <span className="text-gray-600">Vous n'avez pas de compte ?</span>
             <Link
               to="/inscription"
               className="ml-2 text-green-600 font-bold hover:underline"

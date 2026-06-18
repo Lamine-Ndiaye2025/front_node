@@ -13,7 +13,6 @@ const Navbar = () => {
 
   return (
     <nav className="bg-gradient-to-r from-blue-700 to-indigo-800 shadow-lg px-8 py-4 flex items-center justify-between">
-
       {/* Logo */}
       <div className="flex items-center gap-2">
         <h1 className="text-4xl font-extrabold text-white">
@@ -29,14 +28,11 @@ const Navbar = () => {
           className="w-full py-3 pl-12 pr-4 rounded-full border-none outline-none shadow-md"
         />
 
-        <FaSearch
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"
-        />
+        <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
       </div>
 
       {/* Menu */}
       <div className="flex items-center gap-4">
-
         <NavLink
           to="/profil"
           className="flex items-center gap-2 text-white font-semibold hover:text-yellow-300"
