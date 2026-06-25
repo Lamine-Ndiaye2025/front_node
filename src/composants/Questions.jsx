@@ -44,6 +44,13 @@ const Questions = () => {
       auteur: "Khadija Fall",
     },
   ];
+  const supprimerQuestion = (id) => {
+  console.log("Supprimer :", id);
+};
+
+const modifierQuestion = (question) => {
+  console.log("Modifier :", question);
+};
 
   return (
     <div className="w-full p-10">
