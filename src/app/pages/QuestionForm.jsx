@@ -1,98 +1,108 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+const URL_FRONT = import.meta.env.VITE_URL_FRONT;
 
-const QuestionForm = () => {
-  const [question, setQuestion] = useState({
-    titre: "",
-    description: "",
-    categorie: "",
-  });
+export default function QuestionForm() {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [tags, setTags] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
 
-  const handleChange = (e) => {
-    setQuestion({
-      ...question,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(question);
-    alert("Question publiée avec succès !");
+    setLoading(true);
+
+    try {
+      await axios.post(`${URL_FRONT}/api/question`, {
+        titre: title,
+        description,
+        
+        tags: tags.split(",").map(tag => tag.trim()),
+        
+      });
+
+      alert("Question ajoutée ! 🎉");
+      setTitle("");
+      setDescription("");
+
+      setTags("");
+      navigate('/');
+
+    
+    } catch (error) {
+      console.log(error);
+      alert("Erreur lors de l'envoi ❌");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-center p-6">
-      <div className="bg-white shadow-xl rounded-2xl w-full max-w-3xl p-8">
-        <h1 className="text-3xl font-bold text-center text-blue-700 mb-6">
-          Poser une Question
-        </h1>
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-tr from-red-50 via-rose-50 to-orange-50 px-4 py-10">
+      <form 
+        onSubmit={handleSubmit} 
+        className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-xl border border-rose-100/80 transition-all"
+      >
+        <div className="mb-6 text-center">
+          <h2 className="text-2xl font-extrabold text-gray-800 tracking-tight">
+            Poser une question
+          </h2>
+          <p className="text-sm text-gray-500 mt-1">
+            Partage ton problème avec la communauté.
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Titre */}
-          <div>
-            <label className="block font-semibold mb-2">
-              Titre de la question
-            </label>
-            <input
-              type="text"
-              name="titre"
-              value={question.titre}
-              onChange={handleChange}
-              placeholder="Ex: Comment utiliser React Router ?"
-              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+        
 
-          {/* Catégorie */}
-          <div>
-            <label className="block font-semibold mb-2">
-              Catégorie
-            </label>
-            <select
-              name="categorie"
-              value={question.categorie}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="">Choisir une catégorie</option>
-              <option value="React">React</option>
-              <option value="Node.js">Node.js</option>
-              <option value="MongoDB">MongoDB</option>
-              <option value="Laravel">Laravel</option>
-              <option value="Java">Java</option>
-              <option value="Autre">Autre</option>
-            </select>
-          </div>
+        <div className="mb-4">
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Titre de la question</label>
+          <input
+            type="text"
+            placeholder="Sois précis et concis..."
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition text-gray-700"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </div>
 
-          {/* Description */}
-          <div>
-            <label className="block font-semibold mb-2">
-              Description détaillée
-            </label>
-            <textarea
-              name="description"
-              value={question.description}
-              onChange={handleChange}
-              rows="6"
-              placeholder="Décrivez votre problème ou votre question..."
-              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+        <div className="mb-4">
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
+          <textarea
+            placeholder="Décris ton problème..."
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition text-gray-700 h-36 resize-y"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+        </div>
 
-          {/* Bouton */}
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition"
-          >
-            Publier la question
-          </button>
-        </form>
-      </div>
+        <div className="mb-6">
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Tags</label>
+          <input
+            type="text"
+            placeholder="react, node, javascript"
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition text-gray-700"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+          />
+          <p className="text-xs text-gray-400 mt-1">Séparez les tags par des virgules.</p>
+        </div>
+
+        <button 
+          type="submit"
+          disabled={loading}
+          className={`w-full font-semibold text-white py-3 rounded-lg shadow-md transition-all duration-200 transform active:scale-[0.98] ${
+            loading 
+              ? "bg-red-400 cursor-not-allowed" 
+              : "bg-red-600 hover:bg-red-700 hover:shadow-lg"
+          }`}
+        >
+          {loading ? "Publication en cours..." : "Publier la question"}
+        </button>
+      </form>
     </div>
   );
-};
-
-export default QuestionForm;
+}

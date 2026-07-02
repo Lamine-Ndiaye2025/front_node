@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaSearch, FaUserCircle } from "react-icons/fa";
 
+
 const Navbar = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
