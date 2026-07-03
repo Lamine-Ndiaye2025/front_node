@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-const URL_FRONT = import.meta.env.VITE_URL_FRONT;
+const URL_BACK= import.meta.env.VITE_URL_BACK;
 
 export default function QuestionForm() {
   const [title, setTitle] = useState("");
@@ -15,7 +15,7 @@ export default function QuestionForm() {
     setLoading(true);
 
     try {
-      await axios.post(`${URL_FRONT}/api/question`, {
+      await axios.post(`${URL_BACK}/api/question`, {
         titre: title,
         description,
         
